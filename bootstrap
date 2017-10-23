@@ -3,6 +3,7 @@ set -x
 set -e
 
 # Check for automake
+function version { echo "$@" | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
 amvers="no"
 if automake-1.11 --version >/dev/null 2>&1; then
   amvers="-1.11"
@@ -20,7 +21,7 @@ elif automake-1.5 --version >/dev/null 2>&1; then
   amvers="-1.5"
 elif automake --version > /dev/null 2>&1; then
   amvers="`automake --version | sed -e '1s/[^0-9]*//' -e q`"
-  if expr "$amvers" "<" "1.5" > /dev/null 2>&1; then
+  if expr "$(version "$amvers")" "<" "$(version "1.5")" > /dev/null 2>&1; then
     amvers="no"
   else
     amvers=""
